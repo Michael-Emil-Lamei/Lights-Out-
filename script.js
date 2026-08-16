@@ -24,6 +24,12 @@ let currentState = GAME_STATE.IDLE;
 
 function startGame(event) {
     event.stopPropagation();
+
+    lightTimers.forEach(function (timerId) {
+        clearTimeout(timerId);
+    });
+    clearTimeout(goTimer);
+    
     currentState = GAME_STATE.COUNTDOWN;
 
     lights.forEach(function (light) {
