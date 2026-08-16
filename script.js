@@ -55,10 +55,9 @@ function handleReactionClick() {
     } else if (currentState === GAME_STATE.GO) {
         const clickTime = Date.now();
         reactionTime = clickTime - lightsOutTime;
-        console.log("Reaction Time:", reactionTime, "ms");
-        resultsDisplay.textContent = "Reaction Time: " + reactionTime + "ms";
         currentState = GAME_STATE.RESULT;
         lightsOutTime = undefined;
+        showResult(false);
     }
 }
 
@@ -73,9 +72,16 @@ function handleFalseStart() {
     });
 
     currentState = GAME_STATE.FALSE_START;
-    resultsDisplay.textContent = "False Start. Wait Until the Lights Go Out!";
+    showResult(true);
 }
 
+function showResult(isFalseStart) {
+    if (isFalseStart) {
+        resultsDisplay.textContent = "False Start. Wait Until the Lights Go Out!";
+    } else {
+        resultsDisplay.textContent = "Reaction Time: " + reactionTime + "ms";
+    }
+}
 
 
 reactButton.addEventListener("click", startGame);
