@@ -6,6 +6,10 @@ let lightsOutTime;
 let reactionTime;
 let lightTimers = [];
 let goTimer;
+let validAttempts = 0;
+let personalBest = null;
+let totalReactionTime = 0;
+let falseStartCount = 0;
 
 const GAME_STATE = {
     IDLE: "idle",
@@ -57,6 +61,14 @@ function handleReactionClick() {
         reactionTime = clickTime - lightsOutTime;
         currentState = GAME_STATE.RESULT;
         lightsOutTime = undefined;
+        validAttempts = validAttempts + 1;
+
+        if (personalBest === null || reactionTime < personalBest) {
+            personalBest = reactionTime;
+        }
+
+        totalReactionTime = totalReactionTime + reactionTime;
+
         showResult(false);
     }
 }
@@ -72,14 +84,17 @@ function handleFalseStart() {
     });
 
     currentState = GAME_STATE.FALSE_START;
+    falseStartCount = falseStartCount + 1;
     showResult(true);
 }
 
 function showResult(isFalseStart) {
     if (isFalseStart) {
-        resultsDisplay.textContent = "False Start. Wait Until the Lights Go Out!";
+        resultsDisplay.textContent = "False Start. Wait Until the Lights Go Out!" + " - False Starts: " + falseStartCount;
     } else {
-        resultsDisplay.textContent = "Reaction Time: " + reactionTime + "ms";
+        const averageReactionTime = Math.round(totalReactionTime / validAttempts);
+
+        resultsDisplay.textContent = "Reaction Time: " + reactionTime + "ms" + " - PR: " + personalBest + "ms" + " - Average: " + averageReactionTime + "ms" + " - Attempts: " + validAttempts + " - false starts: " + falseStartCount;
     }
 }
 
