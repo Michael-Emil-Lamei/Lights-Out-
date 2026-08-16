@@ -1,0 +1,30 @@
+body{
+    background-color: #111111;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+#lights{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 40px 0;
+}
+
+.light{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #333;
+}
+
+.light.on{
+    background-color: red;
+}
+
+#reaction-button{
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
