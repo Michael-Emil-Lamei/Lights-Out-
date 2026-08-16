@@ -4,8 +4,23 @@ const resultsDisplay = document.querySelector("#results");
 
 let lightsOutTime;
 let reactionTime;
+let lightTimers = [];
+let goTimer;
 
-function startGame() {
+const GAME_STATE = {
+    IDLE: "idle",
+    COUNTDOWN: "countdown",
+    GO: "go",
+    RESULT: "result",
+    FALSE_START: "falseStart",
+};
+
+let currentState = GAME_STATE.IDLE;
+
+
+function startGame(event) {
+    event.stopPropagation();
+    currentState = GAME_STATE.COUNTDOWN;
 
     lights.forEach(function (light) {
         light.classList.remove("on");
@@ -13,31 +28,52 @@ function startGame() {
     resultsDisplay.textContent = "";
     lightsOutTime = undefined;
 
+    lightTimers = [];
+
     for (let i = 0; i < lights.length; i++) {
-        setTimeout(function () {
+        const timerId = setTimeout(function () {
             lights[i].classList.add("on");
         },   (i + 1) * 1000);
+        lightTimers.push(timerId);
     }
 
     const randomDelay = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
 
-    setTimeout(function (){
+    goTimer = setTimeout(function (){
         lights.forEach(function (light) {
             light.classList.remove("on");
         });
         lightsOutTime = Date.now();
+        currentState = GAME_STATE.GO;
         console.log("lights out at:", lightsOutTime);
     }, 5000 + randomDelay);
 }
 
 function handleReactionClick() {
-    if (lightsOutTime) {
+    if (currentState === GAME_STATE.COUNTDOWN) {
+        handleFalseStart();
+    } else if (currentState === GAME_STATE.GO) {
         const clickTime = Date.now();
         reactionTime = clickTime - lightsOutTime;
         console.log("Reaction Time:", reactionTime, "ms");
-        resultsDisplay.textContent = "Reaction Time:" + reactionTime + "ms";
+        resultsDisplay.textContent = "Reaction Time: " + reactionTime + "ms";
+        currentState = GAME_STATE.RESULT;
         lightsOutTime = undefined;
     }
+}
+
+function handleFalseStart() {
+    lightTimers.forEach(function (timerId) {
+        clearTimeout(timerId);
+    });
+    clearTimeout(goTimer);
+
+    lights.forEach(function (light) {
+        light.classList.remove("on");
+    });
+
+    currentState = GAME_STATE.FALSE_START;
+    resultsDisplay.textContent = "False Start. Wait Until the Lights Go Out!";
 }
 
 
