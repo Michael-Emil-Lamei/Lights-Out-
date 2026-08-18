@@ -7,20 +7,55 @@
         <link rel="stylesheet" href="style.css">
     </head>
 
-    <body>
-        <h1> Lights Out! </h1>
+    <body data-state = "idle">
 
-        <div id="light-container">
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-        </div>
-        
-        <button id="reaction-button"> Start </button>
+        <header class="site-header">
+            <h1 class="site-title">Lights Out!</h1>
+            <p class="site-text">Race Control</p>
+        </header>
 
-        <p id="results"></p>
+        <main class="game">
+
+            <div id="light-container">
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+            </div>
+
+            <p id="system_status">Ready</p>
+
+            <button id="reaction_button">Start</button>
+
+            <div id="results">
+                <div id="r-label">Reaction</div>
+                <div id="r-value"></div>
+                <div id="r-unit">ms</div>
+            </div>
+
+            <div id="states-panel">
+                <div class="stat">
+                    <p class="stat_label">Best</p>
+                    <p id="stat-best" class="stat-value">-</p>
+                </div>
+
+                <div class="stat">
+                    <p class="stat_label">Average</p>
+                    <p id="stat-average" class="stat-value">-</p>
+                </div>
+
+                <div class="stat">
+                    <p class="stat_label">Attempts</p>
+                    <p id="stat-attempts" class="stat-value">0</p>
+                </div>
+
+                <div class="stat">
+                    <p class="stat_label">False Starts</p>
+                    <p id="stat-false" class="stat-value">0</p>
+                </div>
+            </div>
+        </main>
 
         <script src="script.js"></script>
 

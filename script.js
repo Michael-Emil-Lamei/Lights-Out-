@@ -1,6 +1,13 @@
-const reactButton = document.querySelector("#reaction-button");
+const reactButton = document.querySelector("#reaction_button");
 const lights = document.querySelectorAll(".light");
-const resultsDisplay = document.querySelector("#results");
+const statusDisplay = document.querySelector("#system_status");
+const resultValue = document.querySelector("#r-value");
+const statBest = document.querySelector("#stat-best");
+const statAverage = document.querySelector("#stat-average");
+const statAttempts = document.querySelector("#stat-attempts");
+const statFalseStarts = document.querySelector("#stat-false");
+
+
 
 let lightsOutTime;
 let reactionTime;
@@ -19,7 +26,28 @@ const GAME_STATE = {
     FALSE_START: "falseStart",
 };
 
+const STATUS_MESSAGES = {
+    [GAME_STATE.IDLE]: "Ready",
+    [GAME_STATE.COUNTDOWN]: "Start Sequence",
+    [GAME_STATE.GO]: "Lights Out",
+    [GAME_STATE.RESULT]: "Valid Start",
+    [GAME_STATE.FALSE_START]: "False Start",
+};
+
 let currentState = GAME_STATE.IDLE;
+
+function updateGameState(newState) {
+    currentState = newState;
+    document.body.dataset.state = newState;
+    statusDisplay.textContent = STATUS_MESSAGES[newState];
+
+    statusDisplay.style.animation = "none";
+    statusDisplay.offsetWidth;
+    statusDisplay.style.animation = "";
+
+    const roundInProgress = newState === GAME_STATE.COUNTDOWN;
+    reactButton.disabled = roundInProgress;
+}
 
 
 function startGame(event) {
@@ -29,13 +57,12 @@ function startGame(event) {
         clearTimeout(timerId);
     });
     clearTimeout(goTimer);
-    
-    currentState = GAME_STATE.COUNTDOWN;
+
+    updateGameState(GAME_STATE.COUNTDOWN);
 
     lights.forEach(function (light) {
         light.classList.remove("on");
     });
-    resultsDisplay.textContent = "";
     lightsOutTime = undefined;
 
     lightTimers = [];
@@ -54,7 +81,7 @@ function startGame(event) {
             light.classList.remove("on");
         });
         lightsOutTime = Date.now();
-        currentState = GAME_STATE.GO;
+        updateGameState(GAME_STATE.GO);
         console.log("lights out at:", lightsOutTime);
     }, 5000 + randomDelay);
 }
@@ -65,7 +92,7 @@ function handleReactionClick() {
     } else if (currentState === GAME_STATE.GO) {
         const clickTime = Date.now();
         reactionTime = clickTime - lightsOutTime;
-        currentState = GAME_STATE.RESULT;
+        updateGameState(GAME_STATE.RESULT);
         lightsOutTime = undefined;
         validAttempts = validAttempts + 1;
 
@@ -89,19 +116,24 @@ function handleFalseStart() {
         light.classList.remove("on");
     });
 
-    currentState = GAME_STATE.FALSE_START;
+    updateGameState(GAME_STATE.FALSE_START);
     falseStartCount = falseStartCount + 1;
     showResult(true);
 }
 
 function showResult(isFalseStart) {
     if (isFalseStart) {
-        resultsDisplay.textContent = "False Start. Wait Until the Lights Go Out!" + " - False Starts: " + falseStartCount;
+        resultValue.textContent = "-";
     } else {
-        const averageReactionTime = Math.round(totalReactionTime / validAttempts);
+        resultValue.textContent = reactionTime;
 
-        resultsDisplay.textContent = "Reaction Time: " + reactionTime + "ms" + " - PR: " + personalBest + "ms" + " - Average: " + averageReactionTime + "ms" + " - Attempts: " + validAttempts + " - false starts: " + falseStartCount;
+        const averageReactionTime = Math.round(totalReactionTime / validAttempts);
+        statBest.textContent = personalBest + "ms";
+        statAverage.textContent = averageReactionTime + "ms";
+        statAttempts.textContent = validAttempts;
     }
+
+    statFalseStarts.textContent = falseStartCount;
 }
 
 

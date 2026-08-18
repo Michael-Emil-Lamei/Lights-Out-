@@ -1,30 +1,198 @@
-body{
-    background-color: #111111;
-    color: white;
-    font-family: sans-serif;
+:root {
+    --color-bg: #0a0a0a;
+    --color-panel: #16161a;
+    --color-border: #2a2a2e;
+    --color-text: #f2f2f2;
+    --color-text-dim: #8a8a8f;
+    --color-accent: #e10600;
+
+    --font-main: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Consolas, "Courier New", monospace;
+
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 32px;
+    --space-xl: 64px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-bg);
+    background-image: 
+        radial-gradient(circle at 50% 20%, rgba(225, 6, 0, 0.06), transparent 55%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: auto, 40px 40px, 40px 40px;
+    color: var(--color-text);
+    font-family: var(--font-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--space-md);
+}
+
+.game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+    width: 100%;
+    max-width: 480px;
+}
+
+.site-header {
     text-align: center;
 }
 
-#lights{
+.site-title {
+    font-size: 1.75rem;
+    letter-spacing: 0.05em;
+}
+
+.site-text {
+    color: var(--color-text-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    margin-top: var(--space-sm);
+}
+
+#light-container {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin: 40px 0;
+    gap: var(--space-md);
 }
 
-.light{
-    width: 60px;
-    height: 60px;
+.light {
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    background-color: #333;
+    background-color: var(--color-panel);
+    border: 2px solid var(--color-border);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.light.on{
-    background-color: red;
+.light.on {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 24px 4px rgba(225, 6, 0, 0.6);
 }
 
-#reaction-button{
-    padding: 10px 20px;
-    font-size: 16px;
+#reaction_button {
+    font-family: var(--font-main);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--color-text);
+    background-color: transparent;
+    border: 2px solid var(--color-accent);
+    padding: var(--space-sm) var(--space-lg);
     cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+#reaction_button:hover:not(:disabled) {
+    background-color: var(--color-accent);
+}
+
+#reaction_button:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+#reaction_button:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 4px;
+}
+
+#reaction_button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+@keyframes statusFade {
+    from {
+        opacity: 0.3;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#system-status {
+    animation: statusFade 0.25s ease;
+}
+
+#states-panel {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: var(--space-md);
+width: 100%;
+padding: var(--space-md);
+border: 1px solid var(--color-border);
+background-color: var(--color-panel);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat_label {
+    color: var(--color-text-dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+}
+
+.stat-value {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    margin-top: 4px;
+}
+
+#results {
+    text-align: center;
+}
+
+#r-label {
+    color: var(--color-text-dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.15rem;
+}
+
+#r-value {
+    font-family: var(--font-mono);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    min-height: 1.1em
+}
+
+#r-unit {
+    color: var(--color-text-dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+}
+
+@media (max-width: 420px) {
+    .light {
+        width: 48px;
+        height: 48px;
+    }
+
+    #light-container {
+        gap: var(--space-sm);
+    }
+
+    #r-value {
+        font-size: 2.75rem;
+    }
+
+    .site-title {
+        font-size: 1.4rem;
+    }
 }
